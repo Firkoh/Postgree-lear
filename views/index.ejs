@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Negara di seluruh Dunia</title>
+    <link href="../output.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 p-8">
+    <h1 class="text-2xl font-bold mb-6 text-center">Negara Di Seluruh Dunia</h1>
+    <% if (data.length > 0) { %>
+    <form id="addForm" class="mt-4" action="/tambah" method="post"></form>
+    <label class="relative block">
+        <span class="sr-only">Search</span>
+        <span class="absolute inset-y-0 left-0 flex items-center pl-2">
+            <svg class="h-5 w-5 fill-slate-300" viewBox="0 0 20 20"></svg>
+        </span>
+        <input class="placeholder:italic placeholder:text-slate-400 block bg-white w-full border border-slate-300 rounded-md py-2 pl-9 pr-3 shadow-sm focus:outline-none focus:border-sky-500 focus:ring-sky-500 focus:ring-1 sm:text-sm" placeholder="Cari Apapun tentang Negara..." type="text" name="search" id="searchInput" autofocus="true" />
+    </label>
+    <br>
+    <div id="tableContainer">
+        <table class="w-full table-auto border-collapse border border-blue-500 text-center">
+            <thead>
+                <tr>
+<!-- ini EJS Templating -->   <% Object.keys(data[0]).forEach(key => { %>
+                        <th class="px-6 py-4 bg-blue-500 text-white">
+<!-- ini EJS Templating -->   <%=key%>
+                        </th>
+<!-- ini EJS Templating -->   <%   }) %>
+                    
+                    <th class="px-6 py-4 bg-blue-500 text-white">Aksi</th> 
+                </tr>
+            </thead>
+            <tbody>
+                     <% data.forEach(row => { %>
+                    <tr>
+                        <% for (const key in row) { %>
+                            <% if (key === "Gambar Bendera"){ %>
+                                <td class="border border-cyan-500 px-4 py-2">
+                            <!-- <img class="" src="/<%= row["Gambar Bendera"] %>" alt="Bendera <%= row.country %>">  -->
+                        <img class="w-auto text-center" src="<%= row['Gambar Bendera'] %>" alt="Bendera <%=row.country%>">
+                                </td>
+                            <% }else{  %>
+                            <td class="border border-cyan-500 px-4 py-2"><%= row[key] %></td>
+                        <% } %>
+                        <% } %>
+                        <td class="border border-cyan-500 px-4 py-2">
+                            <a href="/edit/<%= row.id %>" class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded">Edit</a>
+                            <a href="/hapus/<%= row.id %>" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">Hapus</a>
+                        </td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+    </div>
+    <% } else { %>
+    <h1 class="text-xl text-center" id="noDataMessage">Tidak ada data yang ditemukan.</h1>
+    <% } %>
+
+  <script
+    document.addEventListener('DOMContentLoaded', () => {
+
+      const searchInput = document.getElementById('searchInput');
+      const tableContainer = document.getElementById('tableContainer');
+      const table = tableContainer.querySelector('table');
+      const thead = table.querySelector('thead');
+      const noDataMessage = document.getElementById('noDataMessage'); 
+
+      searchInput.addEventListener('input', function() {
+        const filter = this.value.toUpperCase();
+        const tr = table.querySelectorAll('tbody tr');
+        let rowsFound = false;
+
+        for (let i = 0; i < tr.length; i++) {
+          let tds = tr[i].getElementsByTagName("td");
+          let found = false;
+
+          for (let j = 0; j < tds.length && !found; j++) {
+            if (tds[j].textContent.toUpperCase().indexOf(filter) > -1) {
+              found = true;
+              rowsFound = true;
+            }
+          }
+
+          tr[i].style.display = found ? "" : "none";
+        }
+
+        thead.style.display = rowsFound ? "" : "none";
+      })};
+  
+      
+  </script>
+</body>
+</html>
+
+
