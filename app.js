@@ -84,8 +84,6 @@ app.get('/hapus/:id', async (req, res,next) => {
          next(error);
     }
 });
-// tidak perlu menaruh setiap menu catch di atas, bisa langgsung dibuatkan
-// ini Error jangan duplikat
 app.use((error, req, res, next) => {
     console.log(`${req.method} ${req.originalUrl} - ${error.message}`);
     if (error.status === 404) {
